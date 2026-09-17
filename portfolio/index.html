@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coastal Home Services</title>
+<meta name="description" content="Case study: a WordPress lead form wired to a Make.com scenario that confirms every sync back into WordPress, with error recovery and an audit log.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0F1E23">
+<link rel="canonical" href="https://andipyk.github.io/coastal-home-services-wp-demo/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Coastal Home Services">
+<meta property="og:description" content="A WordPress lead form wired to Make.com, confirmed back into WordPress, verified with a browser submission.">
+<meta property="og:url" content="https://andipyk.github.io/coastal-home-services-wp-demo/">
+<meta property="og:image" content="https://andipyk.github.io/coastal-home-services-wp-demo/assets/lead-synced.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230F1E23'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='34' font-weight='900' text-anchor='middle' fill='%23FF7A3D'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+  /* Page figure: the lead pipeline diagram. */
+  .pipe text { font-family: var(--font-mono); fill: currentColor; }
+  .pipe .node { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.5; }
+  .pipe .node--make { stroke: var(--accent-mark); }
+  .pipe .node--log { stroke: var(--teal); }
+  .pipe .node--err { stroke-dasharray: 5 4; }
+  .pipe .t-make { fill: var(--accent-text); }
+  .pipe .t-log { fill: var(--teal); }
+  .pipe .t-dim { fill: var(--muted); }
+  .pipe .edge { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+  .pipe .edge--ok { stroke: var(--teal); }
+  .pipe .edge--err { stroke-dasharray: 5 4; }
+  .pipe .arrowhead { fill: var(--line-strong); }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js" integrity="sha512-oJ8QbaQThQoJZ7oEv+29jfPM6CcP+zUxh3PKJs1vyOhx0UraUrE7PQgeItu3dOuCJyrzWpoYMsVjkkPEBzbUqw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js" integrity="sha512-OaIE7ud4P04EhnBuhEcm0wQSceIxbi2pV03oBLS/+F6ampfxsnxcIxOp7H2eF9G7N0kEht0VAzOLG+dTLSo17Q==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <nav class="nav__pill" aria-label="Page">
+    <a class="nav__brand" href="#top">Coastal Home Services</a>
+    <span class="nav__links">
+      <a href="#brief">Brief</a>
+      <a href="#build">Build</a>
+      <a href="#evidence">Evidence</a>
+    </span>
+    <a class="nav__cta" href="https://github.com/andipyk/coastal-home-services-wp-demo">Source</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top">
+    <div class="hero__media">
+      <img src="assets/make-history.jpg" alt="" width="1568" height="652">
+    </div>
+    <div class="shell">
+      <p class="hero__name">Coastal Home Services &middot; case study</p>
+      <h1>A lead form that knows when each lead synced.</h1>
+      <p class="hero__lede">WPForms, a hand-written webhook and REST callback, and a Make.com scenario with error recovery and an audit log. Built end to end and checked with a browser submission.</p>
+      <div class="hero__actions">
+        <a class="btn btn--solid" href="#evidence">See the evidence <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn--line" href="https://github.com/andipyk/coastal-home-services-wp-demo">Source on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="facts">
+    <div class="shell">
+      <dl>
+        <div><dt class="label">Status</dt><dd class="ok">Verified end to end</dd></div>
+        <div><dt class="label">Built</dt><dd>Sept 2026</dd></div>
+        <div><dt class="label">Runtime</dt><dd>WordPress 7.1 &middot; PHP 8.4 &middot; Docker</dd></div>
+        <div><dt class="label">Engagement</dt><dd>Self-initiated</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <section class="section" id="brief">
+    <div class="shell split">
+      <div class="head">
+        <h2>Leads were copied into the CRM by hand.</h2>
+      </div>
+      <div class="prose">
+        <p>A local home-services company (HVAC, plumbing, electrical) takes quote requests through its website. Each one gets retyped into a spreadsheet or CRM, and nothing records whether that follow-up happened. A lead can sit untouched for a day and nobody can tell.</p>
+        <p>What finished looks like, stated so it can be checked:</p>
+        <ul class="goals">
+          <li><span>Every submission lands in WordPress as a structured record with phone, service type and status.</span></li>
+          <li><span>The record reaches the follow-up workflow with no copy and paste.</span></li>
+          <li><span>The workflow reports back, so the record itself shows it was synced and when.</span></li>
+        </ul>
+        <p class="disclosure">Coastal Home Services is invented. I wrote this brief for myself and built the whole stack against it on my own time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="head">
+        <h2>Every lead ends synced, or the audit log records that it did not.</h2>
+      </div>
+      <div class="bento">
+        <article class="card card--wide card--night">
+          <p class="label">Automation</p>
+          <h3>A Make.com scenario that recovers from its own failures</h3>
+          <p>Five modules in one scenario. A failed callback is caught by a Resume handler, every run is written to an audit log, and only runs whose callback succeeded are exported to the spreadsheet.</p>
+          <div class="tags"><span>Webhook</span><span>HTTP</span><span>Resume</span><span>Data store</span><span>Sheets</span></div>
+        </article>
+        <article class="card">
+          <p class="label">Data model</p>
+          <h3>Lead post type and fields, in code</h3>
+          <p><code>register_post_type()</code> and <code>acf_add_local_field_group()</code> in a plugin, so the schema is versioned with everything else and survives a theme change.</p>
+        </article>
+        <article class="card">
+          <p class="label">Outbound</p>
+          <h3>Form submit to webhook</h3>
+          <p>A named function creates the lead and posts a JSON payload with <code>wp_remote_post()</code>. It runs from <code>wp eval</code>, so it can be tested without a browser.</p>
+        </article>
+        <article class="card">
+          <p class="label">Inbound</p>
+          <h3>A signed REST callback</h3>
+          <p><code>POST /wp-json/coastal/v1/lead-status</code> checks a shared secret with <code>hash_equals()</code>. A wrong secret gets 403; the right one marks the lead synced.</p>
+        </article>
+        <article class="card">
+          <p class="label">Front end</p>
+          <h3>Landing page built in Elementor</h3>
+          <p>The quote form sits in an Elementor layout seeded from a script through <code>Document::save()</code>, so a fresh install rebuilds the same page.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Stack">
+    <div class="marquee__track">
+      <ul class="marquee__group">
+        <li>WordPress<span>7.1</span></li><li>PHP<span>8.4</span></li><li>MariaDB<span>11.8</span></li><li>Docker Compose</li><li>ACF<span>6.8</span></li><li>WPForms Lite<span>2.0</span></li><li>Elementor<span>4.2</span></li><li>REST API</li><li>Make.com</li><li>Google Sheets API</li><li>Cloudflare Tunnel</li>
+      </ul>
+      <ul class="marquee__group" aria-hidden="true">
+        <li>WordPress<span>7.1</span></li><li>PHP<span>8.4</span></li><li>MariaDB<span>11.8</span></li><li>Docker Compose</li><li>ACF<span>6.8</span></li><li>WPForms Lite<span>2.0</span></li><li>Elementor<span>4.2</span></li><li>REST API</li><li>Make.com</li><li>Google Sheets API</li><li>Cloudflare Tunnel</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section" id="build">
+    <div class="shell">
+      <div class="head">
+        <h2>What happens after someone presses submit.</h2>
+        <p>Every name in the diagram and the steps is copied from the code or from the Make scenario.</p>
+      </div>
+
+      <div class="split">
+        <ol class="flow">
+          <li><div><strong>Capture</strong><span>WPForms fires <code>wpforms_process_complete</code>. The plugin creates a <code>lead</code> post with status <code>new</code> and fills the ACF fields.</span></div></li>
+          <li><div><strong>Hand off</strong><span><code>wp_remote_post()</code> sends the lead id, name, phone, service and a callback URL to the Make webhook. If that request fails it is logged, and the visitor's form still succeeds.</span></div></li>
+          <li><div><strong>Call back</strong><span>Make's HTTP module posts the lead id to the REST route with the shared secret. WordPress sets status <code>synced</code> and stamps <code>synced_at</code>.</span></div></li>
+          <li><div><strong>Recover</strong><span>If the callback fails, a Resume handler substitutes <code>statusCode: 0</code>, so the run completes and the next modules can tell a recovered failure from a response.</span></div></li>
+          <li><div><strong>Record</strong><span>Every run is written to a Data Store audit log. A filter lets a run through to Google Sheets only when <code>statusCode</code> is not 0.</span></div></li>
+        </ol>
+
+        <div class="stack-y">
+          <div>
+            <p class="code-caption">wp-content/plugins/coastal-core/includes/rest.php: the inbound callback</p>
+            <pre class="codeblock"><span class="cm">// shared-secret auth: timing-safe, no cookie or nonce (the caller is not a browser)</span>
+<span class="fn">'permission_callback'</span> =&gt; <span class="fn">function</span> (WP_REST_Request $req) {
+    <span class="fn">return</span> hash_equals(
+        getenv(<span class="st">'COASTAL_WEBHOOK_SECRET'</span>),
+        $req-&gt;get_header(<span class="st">'x-webhook-secret'</span>) ?? <span class="st">''</span>
+    );
+},</pre>
+          </div>
+          <div>
+            <p class="code-caption">wp-content/plugins/coastal-core/includes/lead-webhook.php: the outbound half</p>
+            <pre class="codeblock"><span class="fn">function</span> coastal_send_lead_webhook(<span class="fn">int</span> $lead_id, <span class="fn">string</span> $name, ...): <span class="fn">void</span> {
+    $response = wp_remote_post(getenv(<span class="st">'COASTAL_WEBHOOK_URL'</span>), [
+        <span class="st">'headers'</span> =&gt; [<span class="st">'Content-Type'</span> =&gt; <span class="st">'application/json'</span>],
+        <span class="st">'body'</span>    =&gt; wp_json_encode($payload),
+    ]);
+    <span class="cm">// a down automation tool must never break the visitor's form</span>
+    <span class="fn">if</span> (is_wp_error($response)) { error_log(...); }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <figure class="plate" style="margin-top: clamp(48px, 6vw, 80px)">
+        <div class="plate__frame" data-scale>
+          <button type="button" class="zoom" data-svg="1" aria-label="Enlarge the pipeline diagram">
+            <span class="svg-scroll">
+              <svg class="pipe" viewBox="0 0 1220 320" role="img" aria-label="A visitor submits the form. WordPress creates a lead and posts it to the Make webhook. Make's HTTP module calls the WordPress REST callback, which marks the lead synced. If the callback fails, a Resume module recovers the run. Either way the run is written to a Data Store audit log, and only a successful run is exported to Google Sheets.">
+                <defs>
+                  <marker id="pipe-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+                </defs>
+                <rect class="node" x="10" y="130" width="130" height="60" rx="10"/>
+                <text x="75" y="155" text-anchor="middle" font-size="12" font-weight="600">Visitor</text>
+                <text class="t-dim" x="75" y="172" text-anchor="middle" font-size="11">submits form</text>
+
+                <rect class="node" x="190" y="105" width="180" height="100" rx="10"/>
+                <text x="280" y="128" text-anchor="middle" font-size="12" font-weight="600">WordPress</text>
+                <text class="t-dim" x="280" y="147" text-anchor="middle" font-size="10.5">wp_insert_post()</text>
+                <text class="t-dim" x="280" y="163" text-anchor="middle" font-size="10.5">lead: status = new</text>
+                <text class="t-dim" x="280" y="179" text-anchor="middle" font-size="10.5">ACF fields set</text>
+
+                <rect class="node node--make" x="420" y="15" width="170" height="60" rx="10"/>
+                <text class="t-make" x="505" y="39" text-anchor="middle" font-size="12" font-weight="600">Make.com</text>
+                <text class="t-dim" x="505" y="57" text-anchor="middle" font-size="10.5">Webhook trigger</text>
+
+                <rect class="node node--make" x="420" y="115" width="170" height="90" rx="10"/>
+                <text class="t-make" x="505" y="138" text-anchor="middle" font-size="12" font-weight="600">Make.com</text>
+                <text class="t-dim" x="505" y="157" text-anchor="middle" font-size="10.5">HTTP callback</text>
+                <text class="t-dim" x="505" y="173" text-anchor="middle" font-size="10.5">POST + shared secret</text>
+
+                <rect class="node" x="650" y="15" width="180" height="90" rx="10"/>
+                <text x="740" y="38" text-anchor="middle" font-size="12" font-weight="600">WordPress</text>
+                <text class="t-dim" x="740" y="56" text-anchor="middle" font-size="10.5">hash_equals() check</text>
+                <text class="t-dim" x="740" y="72" text-anchor="middle" font-size="10.5">lead: status = synced</text>
+                <text class="t-log" x="740" y="88" text-anchor="middle" font-size="10.5" font-weight="600">synced_at set</text>
+
+                <rect class="node node--err" x="650" y="230" width="170" height="62" rx="10"/>
+                <text x="735" y="254" text-anchor="middle" font-size="12" font-weight="600">Resume</text>
+                <text class="t-dim" x="735" y="271" text-anchor="middle" font-size="10.5">recovers a failed call</text>
+                <text class="t-dim" x="735" y="285" text-anchor="middle" font-size="9.5">statusCode &#8594; 0</text>
+
+                <rect class="node node--log" x="880" y="115" width="150" height="90" rx="10"/>
+                <text class="t-log" x="955" y="138" text-anchor="middle" font-size="12" font-weight="600">Data store</text>
+                <text class="t-dim" x="955" y="157" text-anchor="middle" font-size="10.5">audit log</text>
+                <text class="t-dim" x="955" y="173" text-anchor="middle" font-size="10.5">every run</text>
+
+                <rect class="node node--log" x="1080" y="115" width="130" height="90" rx="10"/>
+                <text class="t-log" x="1145" y="138" text-anchor="middle" font-size="12" font-weight="600">Sheets</text>
+                <text class="t-dim" x="1145" y="157" text-anchor="middle" font-size="10">Add a Row</text>
+                <text class="t-dim" x="1145" y="173" text-anchor="middle" font-size="9.5">success only</text>
+
+                <line class="edge" x1="140" y1="160" x2="188" y2="158" marker-end="url(#pipe-arrow)"/>
+                <path class="edge" d="M370,130 C400,105 400,70 418,48" marker-end="url(#pipe-arrow)"/>
+                <text class="t-dim" x="382" y="90" font-size="10">wp_remote_post()</text>
+                <line class="edge" x1="505" y1="75" x2="505" y2="113" marker-end="url(#pipe-arrow)"/>
+                <path class="edge" d="M590,145 C615,110 620,80 648,58" marker-end="url(#pipe-arrow)"/>
+                <text class="t-dim" x="600" y="105" font-size="10">on success</text>
+                <path class="edge edge--err" d="M550,205 C560,225 590,240 648,255" marker-end="url(#pipe-arrow)"/>
+                <text class="t-dim" x="565" y="228" font-size="10">on error</text>
+                <line class="edge" x1="590" y1="165" x2="878" y2="165" marker-end="url(#pipe-arrow)"/>
+                <text class="t-dim" x="700" y="158" font-size="10">either way, logged</text>
+                <path class="edge" d="M820,245 C850,225 855,195 878,180" marker-end="url(#pipe-arrow)"/>
+                <line class="edge edge--ok" x1="1030" y1="160" x2="1078" y2="160" marker-end="url(#pipe-arrow)"/>
+                <text class="t-dim" x="1032" y="197" font-size="9.5">filtered</text>
+              </svg>
+            </span>
+            <span class="zoom__hint" aria-hidden="true">Enlarge</span>
+          </button>
+        </div>
+        <figcaption><strong>The lead pipeline</strong><span>The dashed path runs only when the callback fails. The teal path is the one that reaches the spreadsheet.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="evidence">
+    <div class="shell">
+      <div class="head">
+        <h2>One submission, followed through four screens.</h2>
+        <p>The recording is one run; the three stills are a second run, for Marcus Delgado (HVAC), captured in wp-admin, Make and the spreadsheet in that order.</p>
+      </div>
+
+      <div class="carousel" data-scale aria-roledescription="carousel" aria-label="Evidence">
+        <div class="carousel__track" tabindex="0">
+          <figure class="plate slide" aria-roledescription="slide" aria-label="1 of 4">
+            <figcaption>
+              <p class="slide__claim">Submit the form, open wp-admin, and the new lead already reads Synced to CRM.</p>
+              <p class="slide__source label">Screen recording</p>
+            </figcaption>
+            <div class="plate__frame">
+              <button type="button" class="zoom" aria-label="Enlarge the screen recording">
+                <img src="assets/demo.gif" alt="Filling in the Get a Free Quote form, submitting it, then opening the new lead in wp-admin, already marked Synced to CRM." width="1568" height="682" loading="lazy">
+                <span class="zoom__hint" aria-hidden="true">Enlarge</span>
+              </button>
+            </div>
+          </figure>
+          <figure class="plate slide" aria-roledescription="slide" aria-label="2 of 4">
+            <figcaption>
+              <p class="slide__claim">The lead carries its status and the time the callback landed.</p>
+              <p class="slide__source label">wp-admin &middot; lead edit screen</p>
+            </figcaption>
+            <div class="plate__frame">
+              <button type="button" class="zoom" aria-label="Enlarge the wp-admin screenshot">
+                <img src="assets/lead-synced.jpg" alt="WordPress admin edit screen for lead Marcus Delgado, showing Status: Synced to CRM and a Synced At timestamp." width="1370" height="585" loading="lazy">
+                <span class="zoom__hint" aria-hidden="true">Enlarge</span>
+              </button>
+            </div>
+          </figure>
+          <figure class="plate slide" aria-roledescription="slide" aria-label="3 of 4">
+            <figcaption>
+              <p class="slide__claim">Make ran all five modules for that lead in one second, using four operations.</p>
+              <p class="slide__source label">Make.com &middot; execution detail</p>
+            </figcaption>
+            <div class="plate__frame">
+              <button type="button" class="zoom" aria-label="Enlarge the Make.com screenshot">
+                <img src="assets/make-history.jpg" alt="Make.com execution detail for the same run: 5 modules, all green, 4 operations, Success in 1 second, including the Resume error handler and the filtered Google Sheets step." width="1568" height="652" loading="lazy">
+                <span class="zoom__hint" aria-hidden="true">Enlarge</span>
+              </button>
+            </div>
+          </figure>
+          <figure class="plate slide" aria-roledescription="slide" aria-label="4 of 4">
+            <figcaption>
+              <p class="slide__claim">The same run added one row to the sheet, because its <code>statusCode</code> passed the filter.</p>
+              <p class="slide__source label">Google Sheets</p>
+            </figcaption>
+            <div class="plate__frame">
+              <img class="native" src="assets/sheets-export.jpg" alt="Google Sheet with columns Lead ID, Name, Phone, Service Type, Synced At, showing Marcus Delgado's row appended by the same run." width="650" height="115" loading="lazy">
+            </div>
+          </figure>
+        </div>
+        <div class="carousel__bar">
+          <div class="thumbs">
+            <button type="button" aria-label="Show slide 1: screen recording"><img src="assets/demo.gif" alt="" width="1568" height="682" loading="lazy"></button>
+            <button type="button" aria-label="Show slide 2: wp-admin"><img src="assets/lead-synced.jpg" alt="" width="1370" height="585" loading="lazy"></button>
+            <button type="button" aria-label="Show slide 3: Make.com"><img src="assets/make-history.jpg" alt="" width="1568" height="652" loading="lazy"></button>
+            <button type="button" aria-label="Show slide 4: Google Sheets"><img src="assets/sheets-export.jpg" alt="" width="650" height="115" loading="lazy"></button>
+          </div>
+          <div class="carousel__ctrl">
+            <button type="button" class="round" data-dir="-1" aria-label="Previous slide">&larr;</button>
+            <span class="carousel__count" aria-live="polite"></span>
+            <button type="button" class="round" data-dir="1" aria-label="Next slide">&rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="split" style="margin-top: clamp(64px, 8vw, 112px)">
+        <div class="table-wrap">
+          <table>
+            <caption>Leads that went through the pipeline, in order, times as logged.</caption>
+            <thead><tr><th scope="col">Time</th><th scope="col">Lead</th><th scope="col">Note</th><th scope="col">Status</th></tr></thead>
+            <tbody>
+              <tr><td class="num">02:14</td><td>Maria Gonzalez</td><td>Electrical. Sent to a stand-in endpoint before the scenario existed.</td><td class="score">Synced</td></tr>
+              <tr><td class="num">02:37</td><td>Robert Chen</td><td>HVAC. First run through Make, synced in 2 s.</td><td class="score">Synced</td></tr>
+              <tr><td class="num">03:41</td><td>Sarah Wilson</td><td>HVAC. The run in the recording.</td><td class="score">Synced</td></tr>
+              <tr><td class="num">07:17</td><td>Marcus Delgado</td><td>HVAC. The run in the three stills: synced, logged, exported.</td><td class="score">Synced</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="checks">
+          <li><span>Submission to <code>synced</code> status, through Make</span><span class="result">~2 s</span></li>
+          <li><span>Callback with a wrong secret</span><span class="result">403</span></li>
+          <li><span>Callback with the right secret and an unknown lead</span><span class="result">404</span></li>
+          <li><span>Make modules and operations for one lead</span><span class="result">5 / 4</span></li>
+          <li><span>PHP warnings from project code, <code>WP_DEBUG</code> confirmed on</span><span class="result">0</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="cta">
+        <h2>Want to watch a lead go through it?</h2>
+        <p>I can walk through the Make scenario, the audit log and the plugin code on a call. The source is public.</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="mailto:andisyafrianda@gmail.com">andisyafrianda@gmail.com</a>
+          <a class="btn btn--line" href="https://github.com/andipyk/coastal-home-services-wp-demo">Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="shell footer">
+  <div>
+    <p class="footer__name">Andi Syafrianda</p>
+    <p class="label">WordPress &middot; automation</p>
+  </div>
+  <div class="footer__links">
+    <a href="#brief">Brief</a>
+    <a href="#build">Build</a>
+    <a href="#evidence">Evidence</a>
+    <a href="https://github.com/andipyk/coastal-home-services-wp-demo">GitHub</a>
+  </div>
+  <p class="footer__fine">Coastal Home Services is a fictional company. This project was self-initiated to demonstrate the approach; it is not client work.</p>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Enlarged view">
+  <div class="lightbox__body" id="lightbox-body"></div>
+  <div class="lightbox__bar">
+    <span id="lightbox-cap"></span>
+    <button type="button" class="lightbox__close" id="lightbox-close" autofocus>Close</button>
+  </div>
+</dialog>
+</body>
+</html>
